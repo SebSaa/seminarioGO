@@ -2,6 +2,7 @@ package chat
 
 import (
 	"net/http"
+	"strconv"
 
 	"github.com/gin-gonic/gin"
 )
@@ -34,12 +35,75 @@ func makeEndpoints(s Service) []*endpoint {
 		path:     "/messages",
 		function: getAll(s),
 	}, &endpoint{
+		method:   "GET",
+		path:     "/messages/:id",
+		function: getById(s),
+	}, &endpoint{
 		method:   "POST",
 		path:     "/messages",
 		function: addMessage(s),
+	}, &endpoint{
+		method:   "PUT",
+		path:     "/messages",
+		function: updateMessage(s),
+	}, &endpoint{
+		method:   "DELETE",
+		path:     "/messages/:id",
+		function: delMessage(s),
 	})
 
 	return list
+}
+
+func updateMessage(s Service) gin.HandlerFunc {
+	var m Message
+	return func(c *gin.Context) {
+		c.BindJSON(&m)
+		result, err := s.UpdateMensaje(m)
+		if err != nil {
+			c.JSON(http.StatusBadRequest, gin.H{
+				"message": err,
+			})
+		} else {
+			c.JSON(http.StatusOK, gin.H{
+				"message": result,
+			})
+		}
+	}
+}
+
+func getById(s Service) gin.HandlerFunc {
+
+	return func(c *gin.Context) {
+		ID, _ := strconv.Atoi(c.Param("id"))
+		result, err := s.FindByID(ID)
+		if err != nil {
+			c.JSON(http.StatusBadRequest, gin.H{
+				"message": err,
+			})
+		} else {
+			c.JSON(http.StatusOK, gin.H{
+				"message": result,
+			})
+		}
+	}
+}
+
+func delMessage(s Service) gin.HandlerFunc {
+
+	return func(c *gin.Context) {
+		ID, _ := strconv.Atoi(c.Param("id"))
+		result, err := s.RemoveByID(ID)
+		if err != nil {
+			c.JSON(http.StatusBadRequest, gin.H{
+				"message": err,
+			})
+		} else {
+			c.JSON(http.StatusOK, gin.H{
+				"message": result,
+			})
+		}
+	}
 }
 
 func addMessage(s Service) gin.HandlerFunc {
