@@ -4,18 +4,17 @@ import (
 	"flag"
 	"fmt"
 	"os"
-	"time"
 
 	"github.com/SeminarioGo/seminarioGO/internal/config"
 	"github.com/SeminarioGo/seminarioGO/internal/database"
-	"github.com/SeminarioGo/seminarioGO/internal/service/chat"
+	"github.com/SeminarioGo/seminarioGO/internal/service/usuario"
 	"github.com/gin-gonic/gin"
 	"github.com/jmoiron/sqlx"
 )
 
 func main() {
 	cfg := readConfig()
-	//service, _ := chat.New(cfg)
+	//service, _ := usuario.New(cfg)
 
 	db, err := database.NewDatabase(cfg)
 	defer db.Close()
@@ -29,8 +28,8 @@ func main() {
 	// 	os.Exit(1)
 	// }
 
-	service, _ := chat.New(db, cfg)
-	httpService := chat.NewHTTPTransport(service)
+	service, _ := usuario.New(db, cfg)
+	httpService := usuario.NewHTTPTransport(service)
 
 	r := gin.Default()
 	httpService.Register(r)
@@ -58,9 +57,10 @@ func readConfig() *config.Config {
 }
 
 func createSchema(db *sqlx.DB) error {
-	schema := `CREATE TABLE IF NOT EXISTS messages (
+	schema := `CREATE TABLE IF NOT EXISTS usuarios (
 		id integer primary key autoincrement,
-		text varchar
+		nombre varchar
+		dni integer
 		);`
 
 	//execute a query on the server
@@ -69,9 +69,5 @@ func createSchema(db *sqlx.DB) error {
 		return err
 	}
 
-	//or, you can use MustExec, which panics on error
-	insertMessage := `INSERT INTO messages (text) VALUES (?)`
-	s := fmt.Sprintf("Message number %v", time.Now().Nanosecond())
-	db.MustExec(insertMessage, s)
 	return nil
 }

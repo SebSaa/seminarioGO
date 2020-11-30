@@ -1,4 +1,4 @@
-package chat
+package usuario
 
 import (
 	"net/http"
@@ -32,41 +32,41 @@ func makeEndpoints(s Service) []*endpoint {
 
 	list = append(list, &endpoint{
 		method:   "GET",
-		path:     "/messages",
+		path:     "/usuarios",
 		function: getAll(s),
 	}, &endpoint{
 		method:   "GET",
-		path:     "/messages/:id",
+		path:     "/usuarios/:id",
 		function: getById(s),
 	}, &endpoint{
 		method:   "POST",
-		path:     "/messages",
-		function: addMessage(s),
+		path:     "/usuarios",
+		function: addUsuarios(s),
 	}, &endpoint{
 		method:   "PUT",
-		path:     "/messages",
-		function: updateMessage(s),
+		path:     "/usuarios",
+		function: updateUsuarios(s),
 	}, &endpoint{
 		method:   "DELETE",
-		path:     "/messages/:id",
-		function: delMessage(s),
+		path:     "/usuarios/:id",
+		function: delUsuarios(s),
 	})
 
 	return list
 }
 
-func updateMessage(s Service) gin.HandlerFunc {
-	var m Message
+func updateUsuarios(s Service) gin.HandlerFunc {
+	var u Usuario
 	return func(c *gin.Context) {
-		c.BindJSON(&m)
-		result, err := s.UpdateMensaje(m)
+		c.BindJSON(&u)
+		result, err := s.UpdateUsuarios(u)
 		if err != nil {
 			c.JSON(http.StatusBadRequest, gin.H{
-				"message": err,
+				"usuario": err,
 			})
 		} else {
 			c.JSON(http.StatusOK, gin.H{
-				"message": result,
+				"usuario": result,
 			})
 		}
 	}
@@ -79,45 +79,45 @@ func getById(s Service) gin.HandlerFunc {
 		result, err := s.FindByID(ID)
 		if err != nil {
 			c.JSON(http.StatusBadRequest, gin.H{
-				"message": err,
+				"usuario": err,
 			})
 		} else {
 			c.JSON(http.StatusOK, gin.H{
-				"message": result,
+				"usuario": result,
 			})
 		}
 	}
 }
 
-func delMessage(s Service) gin.HandlerFunc {
+func delUsuarios(s Service) gin.HandlerFunc {
 
 	return func(c *gin.Context) {
 		ID, _ := strconv.Atoi(c.Param("id"))
 		result, err := s.RemoveByID(ID)
 		if err != nil {
 			c.JSON(http.StatusBadRequest, gin.H{
-				"message": err,
+				"usuario": err,
 			})
 		} else {
 			c.JSON(http.StatusOK, gin.H{
-				"message": result,
+				"usuario": result,
 			})
 		}
 	}
 }
 
-func addMessage(s Service) gin.HandlerFunc {
-	var m Message
+func addUsuarios(s Service) gin.HandlerFunc {
+	var u Usuario
 	return func(c *gin.Context) {
-		c.BindJSON(&m)
-		result, err := s.AddMessage(m)
+		c.BindJSON(&u)
+		result, err := s.AddUsuarios(u)
 		if err != nil {
 			c.JSON(http.StatusBadRequest, gin.H{
-				"message": err,
+				"usuarios": err,
 			})
 		} else {
 			c.JSON(http.StatusOK, gin.H{
-				"message": result,
+				"usuarios": result,
 			})
 		}
 	}
@@ -126,7 +126,7 @@ func addMessage(s Service) gin.HandlerFunc {
 func getAll(s Service) gin.HandlerFunc {
 	return func(c *gin.Context) {
 		c.JSON(http.StatusOK, gin.H{
-			"messages": s.FindAll(),
+			"usuario": s.FindAll(),
 		})
 	}
 
