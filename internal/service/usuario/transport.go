@@ -126,7 +126,7 @@ func addUsuarios(s Service) gin.HandlerFunc {
 func getAll(s Service) gin.HandlerFunc {
 	return func(c *gin.Context) {
 		c.JSON(http.StatusOK, gin.H{
-			"usuario": s.FindAll(),
+			"usuarios": s.FindAll(),
 		})
 	}
 

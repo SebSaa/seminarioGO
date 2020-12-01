@@ -23,10 +23,10 @@ func main() {
 		os.Exit(1)
 	}
 
-	// if err := createSchema(db); err != nil {
-	// 	fmt.Println(err.Error())
-	// 	os.Exit(1)
-	// }
+	if err := createSchema(db); err != nil {
+		fmt.Println(err.Error())
+		os.Exit(1)
+	}
 
 	service, _ := usuario.New(db, cfg)
 	httpService := usuario.NewHTTPTransport(service)
@@ -59,7 +59,7 @@ func readConfig() *config.Config {
 func createSchema(db *sqlx.DB) error {
 	schema := `CREATE TABLE IF NOT EXISTS usuarios (
 		id integer primary key autoincrement,
-		nombre varchar
+		nombre varchar,
 		dni integer
 		);`
 

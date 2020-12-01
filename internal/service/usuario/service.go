@@ -11,7 +11,7 @@ import (
 type Usuario struct {
 	ID     int64
 	Nombre string
-	Dni    int
+	Dni    int64
 }
 
 //Service ...
@@ -36,7 +36,7 @@ func New(db *sqlx.DB, c *config.Config) (Service, error) {
 // Update ...
 func (s service) UpdateUsuarios(u Usuario) (bool, error) {
 
-	sqlStatement := "UPDATE usuarios SET Nombre = ?, Dni = ? WHERE ID = ?"
+	sqlStatement := "UPDATE usuarios SET nombre = ?, dni = ? WHERE ID = ?"
 
 	_, err := s.db.Exec(sqlStatement, u.Nombre, u.Dni, u.ID)
 	if err != nil {
@@ -72,7 +72,7 @@ func (s service) RemoveByID(ID int) (bool, error) {
 
 // AddUsuario
 func (s service) AddUsuarios(u Usuario) (Usuario, error) {
-	sqlStatement := "INSERT INTO usuarios (Nombre, Dni) VALUES (?,?)"
+	sqlStatement := "INSERT INTO usuarios (nombre, dni) VALUES (?,?)"
 
 	res, err := s.db.Exec(sqlStatement, u.Nombre, u.Dni)
 	if err != nil {
